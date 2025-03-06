@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Combobox, 
@@ -41,24 +40,20 @@ const Index = () => {
   const [asyncLoading, setAsyncLoading] = useState(false);
   const [asyncResults, setAsyncResults] = useState<Framework[]>([]);
   
-  // Filter frameworks based on search
   const filteredItems = search === '' 
     ? frameworks 
     : frameworks.filter((framework) =>
         framework.label.toLowerCase().includes(search.toLowerCase())
       );
       
-  // Group frameworks by type
   const languages = filteredItems.filter(f => f.type === 'language');
   const frameworksOnly = filteredItems.filter(f => f.type === 'framework');
   const libraries = filteredItems.filter(f => f.type === 'library');
   
-  // Regular search handler
   const handleSearch = (searchValue: string) => {
     setSearch(searchValue);
   };
 
-  // Simulate async search with a delay
   useEffect(() => {
     if (!asyncSearch) {
       setAsyncResults([]);
@@ -67,14 +62,13 @@ const Index = () => {
     
     setAsyncLoading(true);
     
-    // Simulate API call with setTimeout
     const timer = setTimeout(() => {
       const results = frameworks.filter(item => 
         item.label.toLowerCase().includes(asyncSearch.toLowerCase())
       );
       setAsyncResults(results);
       setAsyncLoading(false);
-    }, 1000); // Simulate network delay
+    }, 1000);
     
     return () => clearTimeout(timer);
   }, [asyncSearch]);
@@ -88,11 +82,10 @@ const Index = () => {
               React Elegant Combobox
             </h1>
             <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto">
-              A beautiful, minimal combobox component with a focus on design and user experience
+              A beautiful, minimal combobox component built from scratch with a focus on design and user experience
             </p>
           </div>
           
-          {/* Primary demo */}
           <div className="max-w-md w-full mx-auto pt-8">
             <Combobox 
               value={value} 
@@ -126,7 +119,6 @@ const Index = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Advanced demo with groups */}
           <div className="space-y-4 p-6 rounded-lg border glass">
             <h2 className="text-xl font-medium">Grouped Examples</h2>
             <p className="text-sm text-muted-foreground">Items organized into logical groups.</p>
@@ -183,7 +175,6 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Async loading demo */}
           <div className="space-y-4 p-6 rounded-lg border glass">
             <h2 className="text-xl font-medium">Async Loading</h2>
             <p className="text-sm text-muted-foreground">Load data asynchronously with loading states.</p>
@@ -227,7 +218,6 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Feature highlight section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pt-6">
           <div className="space-y-2">
             <h3 className="text-lg font-medium">🔍 Full Text Search</h3>
@@ -259,7 +249,7 @@ const Index = () => {
         </div>
         
         <div className="text-center text-sm text-muted-foreground pt-8 pb-4">
-          <p>React Elegant Combobox • MIT License</p>
+          <p>React Elegant Combobox • Built from scratch • MIT License</p>
         </div>
       </div>
     </div>

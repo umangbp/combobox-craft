@@ -1,8 +1,8 @@
 
 {
-  "name": "react-elegant-combobox",
+  "name": "@yourname/react-elegant-combobox",
   "version": "0.1.0",
-  "description": "A beautiful, minimal combobox component for React",
+  "description": "A beautiful, minimal combobox component with a focus on design and user experience",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -10,34 +10,21 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "type-check": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
-  },
-  "dependencies": {
-    "clsx": "^2.0.0",
-    "tailwind-merge": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "rollup": "^3.20.0",
-    "rollup-plugin-typescript2": "^0.34.0",
-    "typescript": "^5.0.0"
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "keywords": [
     "react",
     "combobox",
     "select",
     "autocomplete",
-    "command",
-    "cmdk",
     "search",
-    "ui"
+    "dropdown",
+    "ui",
+    "component",
+    "typescript"
   ],
   "author": "Your Name",
   "license": "MIT",
@@ -48,5 +35,20 @@
   "bugs": {
     "url": "https://github.com/yourusername/react-elegant-combobox/issues"
   },
-  "homepage": "https://github.com/yourusername/react-elegant-combobox#readme"
+  "homepage": "https://github.com/yourusername/react-elegant-combobox#readme",
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "typescript": "^4.5.5",
+    "tsup": "^6.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

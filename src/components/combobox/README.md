@@ -1,270 +1,195 @@
 
 # React Elegant Combobox
 
-A beautiful, minimal combobox component for React with a focus on user experience and design. Inspired by command interfaces like cmdk, but with an emphasis on elegance and simplicity.
+A beautiful, minimal combobox component with a focus on design and user experience.
 
 ## Features
 
-- 🔍 Searchable dropdown with keyboard navigation
-- ⌨️ Full keyboard support (arrows, enter, escape)
-- 🎨 Beautifully designed with smooth animations
-- 🧩 Composable API (similar to Radix UI)
-- 🔄 Controlled and uncontrolled modes
-- ♿ Accessible by default
-- 🎯 TypeScript support
-- 🌙 Light and dark mode support
-- ⏳ Async loading support with loading state
+- 🔍 Full-text search capabilities
+- ⌨️ Complete keyboard navigation
+- 🧩 Composable API with multiple subcomponents
+- ⏳ Async loading support
+- 🎨 Fully customizable with Tailwind CSS
+- ♿ Accessible and ARIA compliant
 
 ## Installation
 
 ```bash
-npm install react-elegant-combobox
-# or
-yarn add react-elegant-combobox
+npm install @yourname/react-elegant-combobox
 ```
 
 ## Basic Usage
 
 ```jsx
 import { 
-  Combobox,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxItem,
-  ComboboxEmpty
-} from 'react-elegant-combobox';
+  Combobox, 
+  ComboboxInput, 
+  ComboboxContent, 
+  ComboboxItem 
+} from '@yourname/react-elegant-combobox';
 
-function Example() {
-  const [value, setValue] = React.useState('');
+// Basic example
+const Example = () => {
+  const [value, setValue] = useState('');
   
   return (
     <Combobox value={value} onChange={setValue}>
       <ComboboxInput placeholder="Search..." />
       <ComboboxContent>
-        {items.length === 0 && <ComboboxEmpty>No results found</ComboboxEmpty>}
-        
-        {items.map((item) => (
-          <ComboboxItem key={item.value} value={item.value}>
-            {item.label}
-          </ComboboxItem>
-        ))}
+        <ComboboxItem value="react">React</ComboboxItem>
+        <ComboboxItem value="vue">Vue</ComboboxItem>
+        <ComboboxItem value="angular">Angular</ComboboxItem>
       </ComboboxContent>
     </Combobox>
   );
-}
-```
-
-## Async Loading Example
-
-```jsx
-import { useState, useEffect } from 'react';
-import { 
-  Combobox,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxItem,
-  ComboboxEmpty,
-  ComboboxLoading
-} from 'react-elegant-combobox';
-
-function AsyncExample() {
-  const [value, setValue] = useState('');
-  const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  
-  // Fetch data when search changes
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!search) return;
-      
-      setLoading(true);
-      try {
-        // Replace with your actual API call
-        const response = await fetch(`/api/search?q=${search}`);
-        const data = await response.json();
-        setItems(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    // Debounce API calls
-    const timer = setTimeout(fetchData, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
-  
-  return (
-    <Combobox 
-      value={value} 
-      onChange={setValue} 
-      loading={loading}
-      onSearchChange={setSearch}
-    >
-      <ComboboxInput placeholder="Search..." />
-      <ComboboxContent>
-        {loading && <ComboboxLoading>Fetching results...</ComboboxLoading>}
-        
-        {!loading && items.length === 0 && (
-          <ComboboxEmpty>No results found</ComboboxEmpty>
-        )}
-        
-        {!loading && items.map((item) => (
-          <ComboboxItem key={item.value} value={item.value}>
-            {item.label}
-          </ComboboxItem>
-        ))}
-      </ComboboxContent>
-    </Combobox>
-  );
-}
+};
 ```
 
 ## API Reference
 
 ### Combobox
 
-The root component that provides context for all the other components.
+The main container component that provides context for all other components.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | `undefined` | The controlled value of the combobox |
-| `onChange` | `(value: string) => void` | `undefined` | Handler that's called when the value changes |
-| `placeholder` | `string` | `"Search..."` | Placeholder text for the input |
-| `autoFocus` | `boolean` | `false` | Whether the input should be autofocused |
-| `defaultOpen` | `boolean` | `false` | Whether the dropdown should be open by default |
-| `onOpenChange` | `(open: boolean) => void` | `undefined` | Handler that's called when the dropdown opens or closes |
-| `onSearchChange` | `(search: string) => void` | `undefined` | Handler that's called when the search input changes |
-| `loading` | `boolean` | `false` | Whether the combobox is in a loading state |
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `React.ReactNode` | Required | The components that make up the combobox |
+| Prop | Type | Description |
+|------|------|-------------|
+| value | string | The currently selected value |
+| onChange | (value: string) => void | Callback when value changes |
+| loading | boolean | Whether the combobox is in a loading state |
+| onSearchChange | (search: string) => void | Callback when search input changes |
+| className | string | Additional classes for the combobox container |
+| children | ReactNode | The combobox children components |
 
 ### ComboboxInput
 
-The input element that users can type in to search.
+The input field component.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `placeholder` | `string` | `undefined` | Placeholder text for the input |
-| `autoFocus` | `boolean` | `false` | Whether the input should be autofocused |
-| `className` | `string` | `undefined` | Additional CSS classes |
+| Prop | Type | Description |
+|------|------|-------------|
+| placeholder | string | Placeholder text |
+| className | string | Additional classes for the input |
+| autoFocus | boolean | Whether the input should auto-focus |
+| disabled | boolean | Whether the input is disabled |
 
 ### ComboboxContent
 
-The dropdown content that contains the items.
+Container for the dropdown items.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `align` | `'start' \| 'center' \| 'end'` | `'center'` | Alignment of the dropdown |
-| `sideOffset` | `number` | `4` | Distance from the input |
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `React.ReactNode` | Required | The content of the dropdown |
-
-### ComboboxEmpty
-
-Displays when there are no items to show.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `React.ReactNode` | Required | The content to display when empty |
-
-### ComboboxLoading
-
-Displays when data is being loaded asynchronously.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `React.ReactNode` | `"Loading..."` | The content to display while loading |
+| Prop | Type | Description |
+|------|------|-------------|
+| className | string | Additional classes for the content container |
+| align | 'start' \| 'center' \| 'end' | Alignment of the dropdown |
+| children | ReactNode | The combobox items or groups |
 
 ### ComboboxItem
 
-An item in the dropdown.
+Individual selectable item.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | Required | The value of the item |
-| `disabled` | `boolean` | `false` | Whether the item is disabled |
-| `onSelect` | `(value: string) => void` | `undefined` | Handler that's called when the item is selected |
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `React.ReactNode` | Required | The content of the item |
+| Prop | Type | Description |
+|------|------|-------------|
+| value | string | The value of the item |
+| className | string | Additional classes for the item |
+| disabled | boolean | Whether the item is disabled |
+| children | ReactNode | The item content |
 
 ### ComboboxGroup
 
-Groups related items together.
+Groups related items together with a heading.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `heading` | `React.ReactNode` | `undefined` | The heading for the group |
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `React.ReactNode` | Required | The items in the group |
+| Prop | Type | Description |
+|------|------|-------------|
+| heading | string | The group heading text |
+| className | string | Additional classes for the group |
+| children | ReactNode | The items within the group |
+
+### ComboboxEmpty
+
+Displays when no items match the search.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| className | string | Additional classes for the empty state |
+| children | ReactNode | The empty state content |
+
+### ComboboxLoading
+
+Displays when items are being loaded.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| className | string | Additional classes for the loading state |
+| children | ReactNode | The loading state content |
 
 ### ComboboxSeparator
 
-A visual separator between items or groups.
+Visual separator between groups or items.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | `undefined` | Additional CSS classes |
+| Prop | Type | Description |
+|------|------|-------------|
+| className | string | Additional classes for the separator |
 
-### useCombobox
+## Advanced Examples
 
-A hook that provides access to the combobox context.
-
-```jsx
-const {
-  value,         // The current value
-  search,        // The current search text
-  setSearch,     // Function to update search text
-  setValue,      // Function to update value
-  open,          // Whether the dropdown is open
-  setOpen,       // Function to open/close the dropdown
-  activeItem,    // The currently active item
-  setActiveItem, // Function to set the active item
-  loading        // Whether the combobox is in a loading state
-} = useCombobox();
-```
-
-## Events and Callbacks
-
-- `onChange`: Called when the value changes
-- `onOpenChange`: Called when the dropdown opens or closes
-- `onSearchChange`: Called when the search input changes
-- `onSelect`: Called when an item is selected (per item)
-
-## Keyboard Navigation
-
-- `Arrow Down`: Move to the next item
-- `Arrow Up`: Move to the previous item
-- `Enter`: Select the active item
-- `Escape`: Close the dropdown
-
-## Styling
-
-The combobox components use CSS classes that can be customized. The default styling is designed to work with Tailwind CSS, but you can override any styles with your own CSS.
+### Grouped Items
 
 ```jsx
-<Combobox className="custom-combobox">
-  <ComboboxInput className="custom-input" />
-  <ComboboxContent className="custom-content">
-    <ComboboxItem className="custom-item" value="item">
-      Item
-    </ComboboxItem>
+<Combobox>
+  <ComboboxInput placeholder="Search..." />
+  <ComboboxContent>
+    <ComboboxGroup heading="Frameworks">
+      <ComboboxItem value="react">React</ComboboxItem>
+      <ComboboxItem value="vue">Vue</ComboboxItem>
+    </ComboboxGroup>
+    <ComboboxSeparator />
+    <ComboboxGroup heading="Languages">
+      <ComboboxItem value="javascript">JavaScript</ComboboxItem>
+      <ComboboxItem value="typescript">TypeScript</ComboboxItem>
+    </ComboboxGroup>
   </ComboboxContent>
 </Combobox>
 ```
 
-## Accessibility
+### Async Loading
 
-The combobox is built with accessibility in mind. It supports:
-
-- Keyboard navigation
-- ARIA attributes
-- Focus management
-- Screen reader announcements
+```jsx
+const AsyncExample = () => {
+  const [value, setValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState([]);
+  
+  const handleSearch = async (search) => {
+    setLoading(true);
+    // Simulate API call
+    const data = await fetchData(search);
+    setItems(data);
+    setLoading(false);
+  };
+  
+  return (
+    <Combobox 
+      value={value} 
+      onChange={setValue}
+      loading={loading}
+      onSearchChange={handleSearch}
+    >
+      <ComboboxInput placeholder="Search..." />
+      <ComboboxContent>
+        {loading ? (
+          <ComboboxLoading>Loading results...</ComboboxLoading>
+        ) : items.length === 0 ? (
+          <ComboboxEmpty>No results found</ComboboxEmpty>
+        ) : (
+          items.map(item => (
+            <ComboboxItem key={item.id} value={item.id}>
+              {item.name}
+            </ComboboxItem>
+          ))
+        )}
+      </ComboboxContent>
+    </Combobox>
+  );
+};
+```
 
 ## License
 
