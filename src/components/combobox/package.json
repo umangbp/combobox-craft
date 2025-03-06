@@ -1,0 +1,52 @@
+
+{
+  "name": "react-elegant-combobox",
+  "version": "0.1.0",
+  "description": "A beautiful, minimal combobox component for React",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "rollup": "^3.20.0",
+    "rollup-plugin-typescript2": "^0.34.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "react",
+    "combobox",
+    "select",
+    "autocomplete",
+    "command",
+    "cmdk",
+    "search",
+    "ui"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/react-elegant-combobox"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/react-elegant-combobox/issues"
+  },
+  "homepage": "https://github.com/yourusername/react-elegant-combobox#readme"
+}
