@@ -8,7 +8,7 @@ import React, {
   useState 
 } from 'react';
 import { cn } from '@/lib/utils';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 
 // Types
 type ComboboxContextType = {
@@ -22,6 +22,7 @@ type ComboboxContextType = {
   setActiveItem: (id: string | null) => void;
   registerItem: (id: string, ref: React.RefObject<HTMLDivElement>) => void;
   unregisterItem: (id: string) => void;
+  loading: boolean;
 };
 
 type ComboboxProps = {
@@ -33,6 +34,8 @@ type ComboboxProps = {
   autoFocus?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onSearchChange?: (search: string) => void;
+  loading?: boolean;
 };
 
 type ComboboxEmptyProps = {
@@ -71,6 +74,11 @@ type ComboboxSeparatorProps = {
   className?: string;
 };
 
+type ComboboxLoadingProps = {
+  className?: string;
+  children?: React.ReactNode;
+};
+
 // Context
 const ComboboxContext = createContext<ComboboxContextType | undefined>(undefined);
 
@@ -93,6 +101,8 @@ const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
     autoFocus = false,
     defaultOpen = false,
     onOpenChange,
+    onSearchChange,
+    loading = false,
     ...props 
   }, ref) => {
     const [search, setSearch] = useState('');
@@ -119,6 +129,14 @@ const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
       setValueState(newValue);
       if (onChange) {
         onChange(newValue);
+      }
+    };
+
+    // Handle search changes
+    const handleSearchChange = (newSearch: string) => {
+      setSearch(newSearch);
+      if (onSearchChange) {
+        onSearchChange(newSearch);
       }
     };
 
@@ -184,14 +202,15 @@ const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
         value={{
           value,
           search,
-          setSearch,
+          setSearch: handleSearchChange,
           setValue,
           open,
           setOpen,
           activeItem,
           setActiveItem,
           registerItem,
-          unregisterItem
+          unregisterItem,
+          loading
         }}
       >
         <div 
@@ -215,7 +234,7 @@ Combobox.displayName = 'Combobox';
 // Subcomponents
 const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
   ({ placeholder, className, autoFocus, ...props }, ref) => {
-    const { search, setSearch, setOpen } = useCombobox();
+    const { search, setSearch, setOpen, loading } = useCombobox();
     
     return (
       <div className="relative w-full">
@@ -236,7 +255,9 @@ const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
           onFocus={() => setOpen(true)}
           {...props}
         />
-        {search && (
+        {loading ? (
+          <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+        ) : search && (
           <button
             type="button"
             className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-muted p-0 opacity-70 hover:opacity-100 transition-opacity"
@@ -303,6 +324,26 @@ const ComboboxEmpty = forwardRef<HTMLDivElement, ComboboxEmptyProps>(
 );
 
 ComboboxEmpty.displayName = 'ComboboxEmpty';
+
+const ComboboxLoading = forwardRef<HTMLDivElement, ComboboxLoadingProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "py-6 text-center text-sm text-muted-foreground flex items-center justify-center",
+          className
+        )}
+        {...props}
+      >
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        {children || "Loading..."}
+      </div>
+    );
+  }
+);
+
+ComboboxLoading.displayName = 'ComboboxLoading';
 
 const ComboboxItem = forwardRef<HTMLDivElement, ComboboxItemProps>(
   ({ value, children, className, disabled = false, onSelect, ...props }, ref) => {
@@ -414,5 +455,6 @@ export {
   ComboboxItem,
   ComboboxGroup,
   ComboboxSeparator,
+  ComboboxLoading,
   useCombobox
 };

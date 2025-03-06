@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Combobox, 
   ComboboxInput, 
@@ -7,7 +7,8 @@ import {
   ComboboxEmpty, 
   ComboboxItem, 
   ComboboxGroup,
-  ComboboxSeparator
+  ComboboxSeparator,
+  ComboboxLoading
 } from '@/components/combobox';
 
 interface Framework {
@@ -34,6 +35,11 @@ const frameworks: Framework[] = [
 const Index = () => {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [asyncValue, setAsyncValue] = useState('');
+  const [asyncSearch, setAsyncSearch] = useState('');
+  const [asyncLoading, setAsyncLoading] = useState(false);
+  const [asyncResults, setAsyncResults] = useState<Framework[]>([]);
   
   // Filter frameworks based on search
   const filteredItems = search === '' 
@@ -47,10 +53,31 @@ const Index = () => {
   const frameworksOnly = filteredItems.filter(f => f.type === 'framework');
   const libraries = filteredItems.filter(f => f.type === 'library');
   
-  // This example demonstrates the useEffect pattern in action to sync components
+  // Regular search handler
   const handleSearch = (searchValue: string) => {
     setSearch(searchValue);
   };
+
+  // Simulate async search with a delay
+  useEffect(() => {
+    if (!asyncSearch) {
+      setAsyncResults([]);
+      return;
+    }
+    
+    setAsyncLoading(true);
+    
+    // Simulate API call with setTimeout
+    const timer = setTimeout(() => {
+      const results = frameworks.filter(item => 
+        item.label.toLowerCase().includes(asyncSearch.toLowerCase())
+      );
+      setAsyncResults(results);
+      setAsyncLoading(false);
+    }, 1000); // Simulate network delay
+    
+    return () => clearTimeout(timer);
+  }, [asyncSearch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex flex-col items-center justify-center p-6">
@@ -156,38 +183,52 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Custom styling demo */}
+          {/* Async loading demo */}
           <div className="space-y-4 p-6 rounded-lg border glass">
-            <h2 className="text-xl font-medium">Custom Styling</h2>
-            <p className="text-sm text-muted-foreground">Fully customizable to match your brand.</p>
+            <h2 className="text-xl font-medium">Async Loading</h2>
+            <p className="text-sm text-muted-foreground">Load data asynchronously with loading states.</p>
             
             <div className="pt-4">
-              <Combobox className="w-full">
-                <ComboboxInput 
-                  placeholder="Search..." 
-                  className="bg-primary/5 border-primary/10 focus-visible:ring-primary/20"
-                />
-                <ComboboxContent 
-                  className="border-primary/10 bg-background/80"
-                  align="center"
-                >
-                  {filteredItems.slice(0, 5).map((framework) => (
-                    <ComboboxItem 
-                      key={framework.value} 
-                      value={framework.value}
-                      className="hover:bg-primary/5 data-[highlighted=true]:bg-primary/10"
-                    >
-                      {framework.label}
-                    </ComboboxItem>
-                  ))}
+              <Combobox 
+                className="w-full"
+                value={asyncValue}
+                onChange={setAsyncValue}
+                onSearchChange={setAsyncSearch}
+                loading={asyncLoading}
+              >
+                <ComboboxInput placeholder="Search frameworks..." />
+                <ComboboxContent>
+                  {asyncLoading ? (
+                    <ComboboxLoading>Searching frameworks...</ComboboxLoading>
+                  ) : asyncResults.length === 0 ? (
+                    <ComboboxEmpty>No frameworks found</ComboboxEmpty>
+                  ) : (
+                    asyncResults.map((item) => (
+                      <ComboboxItem 
+                        key={item.value} 
+                        value={item.value}
+                      >
+                        {item.label}
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          {item.type}
+                        </span>
+                      </ComboboxItem>
+                    ))
+                  )}
                 </ComboboxContent>
               </Combobox>
+              
+              {asyncValue && (
+                <div className="mt-4 text-sm animate-fade-in">
+                  Selected: <span className="font-medium">{frameworks.find(f => f.value === asyncValue)?.label}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
         
         {/* Feature highlight section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pt-6">
           <div className="space-y-2">
             <h3 className="text-lg font-medium">🔍 Full Text Search</h3>
             <p className="text-sm text-muted-foreground">
@@ -206,6 +247,13 @@ const Index = () => {
             <h3 className="text-lg font-medium">⌨️ Keyboard First</h3>
             <p className="text-sm text-muted-foreground">
               Complete keyboard support for power users.
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium">⏳ Async Support</h3>
+            <p className="text-sm text-muted-foreground">
+              Load data asynchronously with beautiful loading states.
             </p>
           </div>
         </div>
